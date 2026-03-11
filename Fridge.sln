@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36811.4 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fridge.API", "Fridge\Fridge.API.csproj", "{3FB91B6E-3BCB-4927-92FD-362B64668188}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fridge.Core", "Fridge.Core\Fridge.Core.csproj", "{CC15BE46-FD71-460D-949B-7137AF8413F3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3FB91B6E-3BCB-4927-92FD-362B64668188}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FB91B6E-3BCB-4927-92FD-362B64668188}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FB91B6E-3BCB-4927-92FD-362B64668188}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FB91B6E-3BCB-4927-92FD-362B64668188}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC15BE46-FD71-460D-949B-7137AF8413F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC15BE46-FD71-460D-949B-7137AF8413F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC15BE46-FD71-460D-949B-7137AF8413F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC15BE46-FD71-460D-949B-7137AF8413F3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8F06DF56-A207-4FC3-AC74-563509528A60}
+	EndGlobalSection
+EndGlobal
