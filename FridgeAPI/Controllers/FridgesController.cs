@@ -1,5 +1,6 @@
-﻿using Fridge.API.Services;
-using Fridge.Core.Models;
+﻿using Fridge.Aplication.Interfaces.Services;
+using Fridge.Contracts.Fridges;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Fridge.API.Controllers
@@ -13,27 +14,48 @@ namespace Fridge.API.Controllers
         {
             _fridgeService = fridgeService;
         }
+        [Authorize]
         [HttpGet]
-        public ActionResult<List<FridgeEntity>> GetAllFridges()
+        public async Task<ActionResult<List<FridgeResponse>>> GetAllFridges()
         {
-            var fridges = _fridgeService.GetAllFridges();
-            return Ok(fridges);
+            var fridges = await _fridgeService.GetAllFridgesAsync();
+            var response = fridges.Select(f => new FridgeResponse
+            {
+                Id = f.Id,
+                Name = f.Name
+            }).ToList();
+
+            return Ok(response);
         }
+        [Authorize]
         [HttpGet("{id}")]
-        public ActionResult<FridgeEntity> GetFridgeById(int id)
+        public async Task<ActionResult<FridgeResponse>> GetFridgeById(int id)
         {
-            var fridge = _fridgeService.GetFridgeById(id);
-            if(fridge==null)
+            var fridge = await _fridgeService.GetFridgeByIdAsync(id);
+            if (fridge == null)
             {
                 return NotFound();
             }
-            return Ok(fridge);
+            var response = new FridgeResponse
+            {
+                Id = fridge.Id,
+                Name = fridge.Name
+            };
+            return Ok(response);
         }
+        [Authorize(Roles = "Manager")]
         [HttpPost]
-        public IActionResult CreateFridge(string name)
+        public async Task<IActionResult> CreateFridge([FromBody] CreateFridgeRequest request)
         {
-            _fridgeService.CreateFridge(name);
-            return Ok();
+            try
+            {
+                await _fridgeService.CreateFridgeAsync(request.Name);
+                return Ok();
+            }
+            catch (BadHttpRequestException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
     }
 }

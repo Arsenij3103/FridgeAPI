@@ -1,5 +1,8 @@
-﻿using Fridge.API.Services;
-using Fridge.Core.Models;
+﻿using Fridge.Aplication.Interfaces.Services;
+using Fridge.Application.Exceptions;
+using Fridge.Contracts.Products;
+using Fridge.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Fridge.API.Controllers
@@ -13,51 +16,89 @@ namespace Fridge.API.Controllers
         {
             _productService = productService;
         }
+        [Authorize]
         [HttpGet]
-        public ActionResult<List<Product>> GetAllProducts()
+        public async Task<ActionResult<List<ProductResponse>>> GetAllProducts()
         {
-            var products = _productService.GetAllProducts();
-            return Ok(products);
+            var products = await _productService.GetAllProductsAsync();
+            var response = products.Select(p => new ProductResponse
+            {
+                Id = p.Id,
+                Name = p.Name,
+                DefaultQuantity = p.DefaultQuantity
+            }).ToList();
+            return Ok(response);
         }
+        [Authorize]
         [HttpGet("{id}")]
-        public ActionResult<Product> GetProductById(int id)
+        public async Task<ActionResult<ProductResponse>> GetProductById(int id)
         {
-            var product = _productService.GetProductById(id);
+            var product = await _productService.GetProductByIdAsync(id);
             if (product == null)
             {
                 return NotFound();
             }
-            return Ok(product);
+            var response = new ProductResponse
+            {
+                Id = product.Id,
+                Name = product.Name,
+                DefaultQuantity = product.DefaultQuantity
+            };
+            return Ok(response);
         }
+        [Authorize(Roles = "Manager")]
         [HttpPost]
-        public IActionResult CreateProduct([FromBody] Product product)
+        public async Task<IActionResult> CreateProduct([FromBody] CreateProductRequest request)
         {
-            _productService.CreateProduct(product);
-            return Ok();
+            try
+            {
+                var product = new Product
+                {
+                    Name = request.Name,
+                    DefaultQuantity = request.DefaultQuantity,
+                };
+                await _productService.CreateProductAsync(product);
+                return Ok();
+            }
+            catch (BadRequestException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
+        [Authorize(Roles = "Manager")]
         [HttpPut("{id}")]
-        public IActionResult UpdateProduct(int id, [FromBody] Product product)
+        public async Task<IActionResult> UpdateProduct(int id, [FromBody] UpdateProductRequest request)
         {
-            if(id!=product.Id)
+            try
             {
-                return BadRequest();
+                var existingProduct = await _productService.GetProductByIdAsync(id);
+                if (existingProduct == null)
+                {
+                    return NotFound();
+                }
+                existingProduct.Name = request.Name;
+                existingProduct.DefaultQuantity = request.DefaultQuantity;
+                await _productService.UpdateProductAsync(existingProduct);
+                return Ok();
             }
-             if (!_productService.ProductExists(id))
+            catch (NotFoundException ex)
             {
-                return NotFound();
+                return BadRequest(new { message = ex.Message });
             }
-            _productService.UpdateProduct(product);
-             return Ok();
         }
+        [Authorize(Roles = "Manager")]
         [HttpDelete("{id}")]
-        public IActionResult DeleteProduct(int id)
+        public async Task<IActionResult> DeleteProduct(int id)
         {
-            if(!_productService.ProductExists(id))
+            try
             {
-                return NotFound();
+                await _productService.DeleteProductAsync(id);
+                return Ok();
             }
-            _productService.DeleteProduct(id);
-            return Ok();
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
         }
     }
 }

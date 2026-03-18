@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -7,10 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.13" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.11" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.13" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.13" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.13">
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.14" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.14" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.14">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -18,7 +19,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Fridge.Core\Fridge.Core.csproj" />
+    <ProjectReference Include="..\ClassLibrary1\Fridge.Application.csproj" />
+    <ProjectReference Include="..\Fridge.Contracts1\Fridge.Contracts.csproj" />
+    <ProjectReference Include="..\Fridge.Domain1\Fridge.Domain.csproj" />
+    <ProjectReference Include="..\Fridge.Infrastructure1\Fridge.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
