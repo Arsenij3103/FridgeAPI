@@ -1,40 +1,42 @@
-﻿using Fridge.API.Data;
+﻿using Fridge.Aplication.Interfaces.Repositories;
 using Fridge.Domain.Entities;
+using Fridge.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
-namespace Fridge.API.Repositories
+namespace Fridge.Infrastructure.Repositories
 {
     public class FridgeRepository : IFridgeRepository
     {
         private readonly AppDbContext _context;
-        
+
         public FridgeRepository(AppDbContext context)
         {
             _context = context;
         }
-            
-        public List<FridgeEntity> GetAll()
+
+        public async Task<List<FridgeResponce>> GetAllAsync()
         {
-            return _context.Fridges.ToList();
+            return await _context.Fridges.ToListAsync();
         }
 
-        public FridgeEntity ? GetById(int id)
+        public async Task<FridgeResponce>? GetByIdAsync(int id)
         {
-            return _context.Fridges.FirstOrDefault(x => x.Id == id);
+            return await _context.Fridges.FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public void Add(FridgeEntity fridge)
+        public async Task AddAsync(FridgeResponce fridge)
         {
-            _context.Fridges.Add(fridge);
-        }
-        
-        public bool Exists(int  id)
-        {
-            return _context.Fridges.Any(x => x.Id == id);
+            await _context.Fridges.AddAsync(fridge);
         }
 
-        public void Save()
+        public async Task<bool> ExistsAsync(int id)
         {
-            _context.SaveChanges();
+            return await _context.Fridges.AnyAsync(x => x.Id == id);
+        }
+
+        public async Task SaveAsync()
+        {
+            await _context.SaveChangesAsync();
         }
 
     }

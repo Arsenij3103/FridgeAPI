@@ -1,5 +1,5 @@
-﻿
-namespace Fridge.Contracts.Auth;
+﻿namespace Fridge.Contracts.Auth;
+
 public class RegisterRequest
 {
     public string UserName { get; set; } = string.Empty;

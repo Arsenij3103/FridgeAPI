@@ -1,7 +1,7 @@
 ﻿using Fridge.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Fridge.API.Data
+namespace Fridge.Infrastructure.Data
 {
     public class AppDbContext : DbContext
     {
@@ -10,10 +10,11 @@ namespace Fridge.API.Data
         {
         }
 
-        public DbSet<FridgeEntity> Fridges { get; set; }
+        public DbSet<FridgeResponce> Fridges { get; set; }
 
         public DbSet<Product> Products { get; set; }
 
         public DbSet<FridgeProduct> FridgeProducts { get; set; }
+        public DbSet<User> Users { get; set; }
     }
 }

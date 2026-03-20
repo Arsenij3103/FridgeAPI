@@ -1,7 +1,7 @@
-﻿namespace Fridge.API.Repositories
+﻿namespace Fridge.Aplication.Interfaces.Repositories
 {
     public interface IRefillRepository
     {
-        void Refill();
+        Task RefillAsync(int fridgeId, int productId);
     }
 }

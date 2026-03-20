@@ -1,12 +1,12 @@
 ﻿using Fridge.Domain.Entities;
 
-namespace Fridge.API.Services
+namespace Fridge.Aplication.Interfaces.Services
 {
     public interface IFridgeService
     {
-        List<FridgeEntity> GetAllFridges();
-        FridgeEntity? GetFridgeById(int id);
-        void CreateFridge(string name);
-        bool FridgeExists(int id);
+        Task<List<FridgeResponce>> GetAllFridgesAsync();
+        Task<FridgeResponce>? GetFridgeByIdAsync(int id);
+        Task CreateFridgeAsync(string name);
+        Task<bool> FridgeExistsAsync(int id);
     }
 }

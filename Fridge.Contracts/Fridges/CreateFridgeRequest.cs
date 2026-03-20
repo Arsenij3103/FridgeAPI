@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Fridge.Contracts.Fridges
+﻿namespace Fridge.Contracts.Fridges
 {
-    internal class CreateFridgeRequest
+    public class CreateFridgeRequest
     {
+        public string Name { get; set; } = string.Empty;
     }
 }

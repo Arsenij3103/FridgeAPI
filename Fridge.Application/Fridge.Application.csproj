@@ -14,8 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Fridge.Contracts1\Fridge.Contracts.csproj" />
-    <ProjectReference Include="..\Fridge.Domain1\Fridge.Domain.csproj" />
+    <ProjectReference Include="..\Fridge.Contracts\Fridge.Contracts.csproj" />
+    <ProjectReference Include="..\Fridge.Domain\Fridge.Domain.csproj" />
   </ItemGroup>
 
 </Project>
