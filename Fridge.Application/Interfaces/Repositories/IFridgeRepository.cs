@@ -1,13 +1,13 @@
 ﻿using Fridge.Domain.Entities;
-namespace Fridge.API.Repositories
-
+namespace Fridge.Aplication.Interfaces.Repositories
 {
+
     public interface IFridgeRepository
     {
-        List<FridgeEntity> GetAll();
-        FridgeEntity? GetById(int id);
-        void Add(FridgeEntity fridge);
-        bool Exists(int id);
-        void Save();
+        Task<List<FridgeResponce>> GetAllAsync();
+        Task<FridgeResponce>? GetByIdAsync(int id);
+        Task AddAsync(FridgeResponce fridge);
+        Task<bool> ExistsAsync(int id);
+        Task SaveAsync();
     }
 }

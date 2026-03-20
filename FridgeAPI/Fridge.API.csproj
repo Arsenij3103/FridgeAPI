@@ -19,10 +19,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ClassLibrary1\Fridge.Application.csproj" />
-    <ProjectReference Include="..\Fridge.Contracts1\Fridge.Contracts.csproj" />
-    <ProjectReference Include="..\Fridge.Domain1\Fridge.Domain.csproj" />
-    <ProjectReference Include="..\Fridge.Infrastructure1\Fridge.Infrastructure.csproj" />
+    <ProjectReference Include="..\Fridge.Application\Fridge.Application.csproj" />
+    <ProjectReference Include="..\Fridge.Contracts\Fridge.Contracts.csproj" />
+    <ProjectReference Include="..\Fridge.Domain\Fridge.Domain.csproj" />
+    <ProjectReference Include="..\Fridge.Infrastructure\Fridge.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

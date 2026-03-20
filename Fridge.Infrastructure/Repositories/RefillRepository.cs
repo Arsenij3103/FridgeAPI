@@ -1,6 +1,9 @@
-﻿using Fridge.API.Data;
+﻿using Fridge.Aplication.Interfaces.Repositories;
+using Fridge.Infrastructure.Data;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-namespace Fridge.API.Repositories
+
+namespace Fridge.Infrastructure.Repositories
 {
     public class RefillRepository : IRefillRepository
     {
@@ -9,9 +12,12 @@ namespace Fridge.API.Repositories
         {
             _context = context;
         }
-        public void Refill()
+        public async Task RefillAsync(int fridgeId, int productId)
         {
-            _context.Database.ExecuteSqlRaw("EXEC Refill");
+            await _context.Database.ExecuteSqlRawAsync(
+                 "EXEC RefillProduct @FridgeId,ProductId",
+                 new SqlParameter("@FridgeId", fridgeId),
+                 new SqlParameter("@ProductId", productId));
         }
     }
 }

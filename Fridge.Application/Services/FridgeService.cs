@@ -1,36 +1,42 @@
-﻿using Fridge.API.Repositories;
+﻿using Fridge.Aplication.Interfaces.Repositories;
+using Fridge.Aplication.Interfaces.Services;
+using Fridge.Application.Exceptions;
 using Fridge.Domain.Entities;
 
-namespace Fridge.API.Services
+namespace Fridge.Aplication.Services
 {
-    public class FridgeService: IFridgeService
+    public class FridgeService : IFridgeService
     {
         private readonly IFridgeRepository _fridgeRepository;
         public FridgeService(IFridgeRepository fridgeRepository)
         {
-            _fridgeRepository=fridgeRepository;
+            _fridgeRepository = fridgeRepository;
         }
 
-        public List<FridgeEntity> GetAllFridges()
+        public async Task<List<FridgeResponce>> GetAllFridgesAsync()
         {
-            return _fridgeRepository.GetAll();
+            return await _fridgeRepository.GetAllAsync();
         }
-        public FridgeEntity ? GetFridgeById(int id)
+        public async Task<FridgeResponce>? GetFridgeByIdAsync(int id)
         {
-            return _fridgeRepository.GetById(id);
+            return await _fridgeRepository.GetByIdAsync(id);
         }
-        public void CreateFridge(string name)
+        public async Task CreateFridgeAsync(string name)
         {
-            var fridge = new FridgeEntity
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new BadRequestException("Fridge name is required");
+            }
+            var fridge = new FridgeResponce
             {
                 Name = name
             };
-            _fridgeRepository.Add(fridge);
-            _fridgeRepository.Save();
+            await _fridgeRepository.AddAsync(fridge);
+            await _fridgeRepository.SaveAsync();
         }
-        public bool FridgeExists(int id)
+        public async Task<bool> FridgeExistsAsync(int id)
         {
-            return _fridgeRepository.Exists(id);
+            return await _fridgeRepository.ExistsAsync(id);
         }
     }
 }

@@ -1,6 +1,5 @@
-﻿
+﻿namespace Fridge.Contracts.Auth;
 
-namespace Fridge.Contracts.Auth;
 public class LoginRequest
 {
     public string Username { get; set; } = string.Empty;

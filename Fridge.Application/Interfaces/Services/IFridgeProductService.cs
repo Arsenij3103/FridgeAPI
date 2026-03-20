@@ -1,13 +1,12 @@
 ﻿using Fridge.Domain.Entities;
 
-namespace Fridge.API.Services
+namespace Fridge.Aplication.Interfaces.Services;
+
+public interface IFridgeProductService
 {
-    public interface IFridgeProductService
-    {
-        List<FridgeProduct> GetProductInFridge(int fridgeid);
-        void AddProductToFridge(int fridgeid,int  productid);
-        void RemoveProductFromFridge(int fridgeid, int productid);
-        void UpdateProductQuantity(int fridgeid,int quantity, int productid);
-        
-    }
+    Task<List<FridgeProduct>> GetProductsByFridgeIdAsync(int fridgeid);
+    Task AddProductToFridgeAsync(int fridgeid, int productid);
+    Task RemoveProductFromFridgeAsync(int fridgeid, int productid);
+    Task UpdateProductQuantityAsync(int fridgeid, int quantity, int productid);
+
 }

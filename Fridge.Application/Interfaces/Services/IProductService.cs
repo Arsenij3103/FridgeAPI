@@ -1,14 +1,14 @@
 ﻿using Fridge.Domain.Entities;
 
-namespace Fridge.API.Services
+namespace Fridge.Aplication.Interfaces.Services
 {
     public interface IProductService
     {
-        List<Product> GetAllProducts();
-        Product? GetProductById(int id);
-        void CreateProduct(Product product);
-        void UpdateProduct(Product product);
-        void DeleteProduct(int id);
-        bool ProductExists(int id);
+        Task<List<Product>> GetAllProductsAsync();
+        Task<Product>? GetProductByIdAsync(int id);
+        Task CreateProductAsync(Product product);
+        Task UpdateProductAsync(Product product);
+        Task DeleteProductAsync(int id);
+        Task<bool> ProductExistsAsync(int id);
     }
 }

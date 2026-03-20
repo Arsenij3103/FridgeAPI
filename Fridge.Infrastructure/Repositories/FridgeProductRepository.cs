@@ -1,6 +1,9 @@
-﻿using Fridge.API.Data;
+﻿
+using Fridge.Aplication.Interfaces.Repositories;
 using Fridge.Domain.Entities;
-namespace Fridge.API.Repositories
+using Fridge.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
+namespace Fridge.Infrastructure.Repositories
 {
     public class FridgeProductRepository : IFridgeProductRepository
     {
@@ -11,45 +14,46 @@ namespace Fridge.API.Repositories
             _context = context;
         }
 
-       public List<FridgeProduct> GetByFridgeId(int fridgeid)
+        public async Task<List<FridgeProduct>> GetByFridgeIdAsync(int fridgeid)
         {
-            return _context.FridgeProducts
-                .Where(x => x.FridgeId == fridgeid)
-                .ToList();
+            return await _context.FridgeProducts
+               .Where(x => x.FridgeId == fridgeid)
+               .ToListAsync();
         }
-        public FridgeProduct ? Get(int fridgeid,int productid)
+        public async Task<FridgeProduct>? GetAsync(int fridgeid, int productid)
         {
-            return _context.FridgeProducts
-                .FirstOrDefault(x => x.FridgeId == fridgeid && x.ProductId == productid);
-        }
-
-        public bool Exists(int fridgeid, int productid)
-        {
-            return _context.FridgeProducts
-                .Any(x => x.FridgeId == fridgeid && x.ProductId == productid);
+            return await _context.FridgeProducts
+                .FirstOrDefaultAsync(x => x.FridgeId == fridgeid && x.ProductId == productid);
         }
 
-        public void Update(FridgeProduct fridgeProduct)
+        public async Task<bool> ExistsAsync(int fridgeid, int productid)
+        {
+            return await _context.FridgeProducts
+                .AnyAsync(x => x.FridgeId == fridgeid && x.ProductId == productid);
+        }
+
+        public Task UpdateAsync(FridgeProduct fridgeProduct)
         {
             _context.FridgeProducts.Update(fridgeProduct);
+            return Task.CompletedTask;
         }
-        public void Add(FridgeProduct fridgeProduct)
+        public async Task AddAsync(FridgeProduct fridgeProduct)
         {
-            _context.FridgeProducts.Add(fridgeProduct);
+            await _context.FridgeProducts.AddAsync(fridgeProduct);
         }
-        public void Delete(int fridgeid, int productid)
+        public async Task DeleteAsync(int fridgeid, int productid)
         {
-            var fridgeProduct = _context.FridgeProducts
-                .FirstOrDefault(x => x.FridgeId == fridgeid && x.ProductId == productid);
-            if(fridgeProduct!=null)
+            var fridgeProduct = await _context.FridgeProducts
+                .FirstOrDefaultAsync(x => x.FridgeId == fridgeid && x.ProductId == productid);
+            if (fridgeProduct != null)
             {
                 _context.FridgeProducts.Remove(fridgeProduct);
             }
         }
 
-        public void Save()
+        public async Task SaveAsync()
         {
-            _context.SaveChanges();
+            _context.SaveChangesAsync();
         }
     }
 }

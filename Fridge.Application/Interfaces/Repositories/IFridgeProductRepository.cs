@@ -1,17 +1,16 @@
 ﻿using Fridge.Domain.Entities;
-using System.Collections.Generic;
 
-namespace Fridge.API.Repositories
+
+namespace Fridge.Aplication.Interfaces.Repositories;
+
+public interface IFridgeProductRepository
 {
-    public interface IFridgeProductRepository
-    {
-        List<FridgeProduct> GetByFridgeId(int fridgeid);
+    Task<List<FridgeProduct>> GetByFridgeIdAsync(int fridgeid);
 
-        FridgeProduct? Get(int fridgeid, int productid);
-        bool Exists(int fridgeid, int productid);
-        void Add(FridgeProduct fridgeProduct);
-        void Update(FridgeProduct fridgeProduct);
-        void Delete(int fridgeid, int productid);
-        void Save();
-    }
+    Task<FridgeProduct>? GetAsync(int fridgeid, int productid);
+    Task<bool> ExistsAsync(int fridgeid, int productid);
+    Task AddAsync(FridgeProduct fridgeProduct);
+    Task UpdateAsync(FridgeProduct fridgeProduct);
+    Task DeleteAsync(int fridgeid, int productid);
+    Task SaveAsync();
 }

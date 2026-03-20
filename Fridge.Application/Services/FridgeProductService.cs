@@ -1,9 +1,10 @@
-﻿using Fridge.API.Repositories;
+﻿using Fridge.Aplication.Interfaces.Repositories;
+using Fridge.Aplication.Interfaces.Services;
+using Fridge.Application.Exceptions;
 using Fridge.Domain.Entities;
-using System;
-using System.Collections.Generic;
 
-namespace Fridge.API.Services
+
+namespace Fridge.Aplication.Services
 {
     public class FridgeProductService : IFridgeProductService
     {
@@ -19,61 +20,76 @@ namespace Fridge.API.Services
             _refillRepository = refillRepository;
             _fridgeRepository = fridgeRepository;
         }
-        public List<FridgeProduct> GetProductInFridge(int fridgeid)
+        public async Task<List<FridgeProduct>> GetProductsByFridgeIdAsync(int fridgeid)
         {
-            return _fridgeProductRepository.GetByFridgeId(fridgeid);
+            var fridgeExists = await _fridgeRepository.ExistsAsync(fridgeid);
+            if (!fridgeExists)
+            {
+                throw new NotFoundException($"Fridge with {fridgeid} was not found");
+            }
+            return await _fridgeProductRepository.GetByFridgeIdAsync(fridgeid);
         }
-        public void AddProductToFridge(int fridgeid, int productid)
+        public async Task? AddProductToFridgeAsync(int fridgeid, int productid)
         {
-            if (!_fridgeRepository.Exists(fridgeid))
+            var fridge = await _fridgeRepository.GetByIdAsync(fridgeid);
+
+            if (fridge == null)
             {
-                throw new Exception("fridge not found");
+                throw new NotFoundException($"Fridge with {fridgeid} was not found");
             }
-            if (!_productRepository.Exists(productid))
+            var product = await _productRepository.GetByIdAsync(productid);
+            if (product == null)
             {
-                throw new Exception("product not found");
+                throw new NotFoundException($"Product with {productid} was not found");
             }
-            var existingFridgeProduct = _fridgeProductRepository.Get(fridgeid, productid);
+            var existingFridgeProduct = await _fridgeProductRepository.GetAsync(fridgeid, productid);
 
             if (existingFridgeProduct != null)
             {
-                existingFridgeProduct.Quantity += 1;
-                _fridgeProductRepository.Update(existingFridgeProduct);
+                existingFridgeProduct.Quantity += product.DefaultQuantity;
+                await _fridgeProductRepository.UpdateAsync(existingFridgeProduct);
             }
             else
             {
-                var newFridgeProduct = new FridgeProduct
+                var fridgeProduct = new FridgeProduct
                 {
                     FridgeId = fridgeid,
                     ProductId = productid,
-                    Quantity = 1
+                    Quantity = product.DefaultQuantity,
                 };
-                _fridgeProductRepository.Add(newFridgeProduct);
+                await _fridgeProductRepository.AddAsync(fridgeProduct);
             }
+            await _fridgeProductRepository.SaveAsync();
         }
-        public void RemoveProductFromFridge(int fridgeid, int productid)
+        public async Task RemoveProductFromFridgeAsync(int fridgeid, int productid)
         {
-            if (!_fridgeProductRepository.Exists(fridgeid, productid))
-            {
-                throw new Exception("product in fridge not found");
-            }
-            _fridgeProductRepository.Delete(fridgeid, productid);
-            _fridgeProductRepository.Save();
-        }
-        public void UpdateProductQuantity(int fridgeid, int quantity, int productid)
-        {
-            var fridgeProduct = _fridgeProductRepository.Get(fridgeid, productid);
+            var fridgeProduct = await _fridgeProductRepository.GetAsync(fridgeid, productid);
             if (fridgeProduct == null)
             {
-                throw new Exception("product in fridge not found");
+                throw new NotFoundException($"Product whith id {productid} in fridge with id{fridgeid} was not found");
+            }
+            await _fridgeProductRepository.DeleteAsync(fridgeid, productid);
+            await _fridgeProductRepository.SaveAsync();
+        }
+        public async Task UpdateProductQuantityAsync(int fridgeId, int quantity, int productId)
+        {
+            if (quantity < 0)
+            {
+                throw new BadRequestException("Quantity cannot be negative");
+            }
+            var fridgeProduct = await _fridgeProductRepository.GetAsync(fridgeId, productId);
+            if (fridgeProduct == null)
+            {
+                throw new NotFoundException($"Product whith id {productId} in fridge with id{fridgeId} was not found");
             }
             fridgeProduct.Quantity = quantity;
-            _fridgeProductRepository.Update(fridgeProduct);
-            _fridgeProductRepository.Save();
+            await _fridgeProductRepository.UpdateAsync(fridgeProduct);
+            await _fridgeProductRepository.SaveAsync();
             if (quantity == 0)
             {
-                _refillRepository.Refill();
+                await _refillRepository.RefillAsync(fridgeId, productId);
             }
         }
+
     }
 }

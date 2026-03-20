@@ -1,7 +1,9 @@
-﻿using Fridge.Domain.Entities;
-using Fridge.API.Data;
-using System.Runtime.CompilerServices;
-namespace Fridge.API.Repositories
+﻿using Fridge.Aplication.Interfaces.Repositories;
+using Fridge.Domain.Entities;
+using Fridge.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
+
+namespace Fridge.Infrastructure.Repositories
 {
     public class ProductRepository : IProductRepository
     {
@@ -12,24 +14,24 @@ namespace Fridge.API.Repositories
             _context = context;
         }
 
-        public List<Product> GetAll()
+        public async Task<List<Product>> GetAllAsync()
         {
-            return _context.Products.ToList();
+            return await _context.Products.ToListAsync();
         }
 
-        public Product ? GetById(int id)
+        public async Task<Product>? GetByIdAsync(int id)
         {
-            return _context.Products.FirstOrDefault(x => x.Id == id);
+            return await _context.Products.FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public bool Exists(int id)
+        public async Task<bool> ExistsAsync(int id)
         {
-            return _context.Products.Any(x => x.Id == id);
+            return await _context.Products.AnyAsync(x => x.Id == id);
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            var product =_context.Products.FirstOrDefault(x => x.Id == id);
+            var product = await _context.Products.FirstOrDefaultAsync(x => x.Id == id);
 
             if (product != null)
             {
@@ -37,18 +39,19 @@ namespace Fridge.API.Repositories
             }
         }
 
-        public void Update(Product product)
+        public Task UpdateAsync(Product product)
         {
             _context.Products.Update(product);
+            return Task.CompletedTask;
         }
 
-        public void Add(Product product)
+        public async Task AddAsync(Product product)
         {
-            _context.Products.Add(product);
+            await _context.Products.AddAsync(product);
         }
-        public void Save()
+        public async Task SaveAsync()
         {
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }

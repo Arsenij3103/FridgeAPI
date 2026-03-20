@@ -1,7 +1,10 @@
-﻿using Fridge.API.Repositories;
+﻿
+using Fridge.Aplication.Interfaces.Repositories;
+using Fridge.Aplication.Interfaces.Services;
+using Fridge.Application.Exceptions;
 using Fridge.Domain.Entities;
 
-namespace Fridge.API.Services
+namespace Fridge.Aplication.Services
 {
     public class ProductService : IProductService
     {
@@ -12,33 +15,60 @@ namespace Fridge.API.Services
             _productRepository = productRepository;
         }
 
-        public List<Product> GetAllProducts()
+        public async Task<List<Product>> GetAllProductsAsync()
         {
-            return _productRepository.GetAll();
+            return await _productRepository.GetAllAsync();
         }
 
-        public Product ? GetProductById(int id)
+        public async Task<Product>? GetProductByIdAsync(int id)
         {
-            return _productRepository.GetById(id);
+            return await _productRepository.GetByIdAsync(id);
         }
-        public void CreateProduct(Product product)
+        public async Task CreateProductAsync(Product product)
         {
-            _productRepository.Add(product);
-            _productRepository.Save();
+            if (string.IsNullOrEmpty(product.Name))
+            {
+                throw new BadRequestException("Product name is required");
+            }
+            if (product.DefaultQuantity < 0)
+            {
+                throw new BadRequestException("Default quantity cannot be negative");
+            }
+            await _productRepository.AddAsync(product);
+            await _productRepository.SaveAsync();
         }
-        public void UpdateProduct(Product product)
+        public async Task UpdateProductAsync(Product product)
         {
-            _productRepository.Update(product);
-            _productRepository.Save();
+            var existingProduct = await _productRepository.GetByIdAsync(product.Id);
+            if (existingProduct == null)
+            {
+                throw new NotFoundException($"Product with id {product.Id} was not found");
+            }
+            if (string.IsNullOrEmpty(product.Name))
+            {
+                throw new BadRequestException("Product name is requried");
+            }
+            if (product.DefaultQuantity < 0)
+            {
+                throw new BadRequestException("Default quantity cannot be negative");
+            }
+            await _productRepository.UpdateAsync(product);
+            await _productRepository.SaveAsync();
         }
-        public void DeleteProduct(int id)
+        public async Task DeleteProductAsync(int id)
         {
-            _productRepository.Delete(id);
-            _productRepository.Save();
+            var existingProduct = await _productRepository.GetByIdAsync(id);
+            if (existingProduct == null)
+            {
+                throw new NotFoundException($"Product with id{id} was not found");
+            }
+
+            await _productRepository.DeleteAsync(id);
+            await _productRepository.SaveAsync();
         }
-        public bool ProductExists(int id)
+        public async Task<bool> ProductExistsAsync(int id)
         {
-            return _productRepository.Exists(id);
+            return await _productRepository.ExistsAsync(id);
         }
     }
 }
